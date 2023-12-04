@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ipfs
+  namespace: dataspace
+spec:
+  ports:
+    - name: "ipfs5001"
+      port: 5001
+      targetPort: 5001
+    - name: "ipfs8080"
+      port: 8080
+      targetPort: 8080
+  selector:
+    app: ipfs

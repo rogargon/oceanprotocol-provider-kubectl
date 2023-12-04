@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: provider
+  name: provider
+  namespace: dataspace
+spec:
+  progressDeadlineSeconds: 2147483647
+  replicas: 1
+  revisionHistoryLimit: 2147483647
+  selector:
+    matchLabels:
+      app: provider
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: provider
+    spec:
+      containers:
+        - env:
+            - name: ARTIFACTS_PATH
+              value: /ocean-provider/artifacts
+            - name: NETWORK_URL
+              value: |
+                {"100":"https://rpc.genx.minimal-gaia-x.eu"}
+            - name: PROVIDER_PRIVATE_KEY
+              value: |
+                {"100":"0x0000000000000000000000000000000000000000000000000000000000000001"}
+            - name: LOG_LEVEL
+              value: DEBUG
+            - name: OCEAN_PROVIDER_URL
+              value: http://0.0.0.0:8030
+            - name: OCEAN_PROVIDER_WORKERS
+              value: "4"
+            - name: IPFS_GATEWAY
+              value: http://ipfs.local/
+            - name: OCEAN_PROVIDER_TIMEOUT
+              value: "9000"
+            - name: OPERATOR_SERVICE_URL
+              value: http://operator-api.dataspace:8050
+            - name: AQUARIUS_URL
+              value: https://aquarius510.v4.delta-dao.com
+            - name: UNIVERSAL_PRIVATE_KEY
+              value: "0x0000000000000000000000000000000000000000000000000000000000000001"
+            - name: REQUEST_TIMEOUT
+              value: "10"
+            - name: PROVIDER_FEE_TOKEN
+              value: 0x0995527d3473b3a98c471f1ed8787acd77fbf009
+          image: oceanprotocol/provider-py:v2.1.6
+          imagePullPolicy: Always
+          name: provider
+          ports:
+            - containerPort: 8030
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 700Mi
+            requests:
+              cpu: 500m
+              memory: 700Mi
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      terminationGracePeriodSeconds: 30

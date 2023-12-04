@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: operator-api
+  name: operator-api
+  namespace: dataspace
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: operator-api
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: operator-api
+    spec:
+      containers:
+      - env:
+        - name: requests_cpu
+          value: "2"
+        - name: requests_memory
+          value: "4Gi"
+        - name: limits_cpu
+          value: "4"
+        - name: limits_memory
+          value: "16Gi"
+        - name: ALGO_POD_TIMEOUT
+          value: "3600"
+        - name: SIGNATURE_REQUIRED
+          value: "0"
+        - name: ALLOWED_PROVIDERS
+          value: '["0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf"]'
+        - name: ALLOWED_ADMINS
+          value: '["postgresadmin"]'
+        - name: POSTGRES_DB
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_DB
+              name: postgres-config
+        - name: POSTGRES_USER
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_USER
+              name: postgres-config
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PASSWORD
+              name: postgres-config
+        - name: POSTGRES_HOST
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_HOST
+              name: postgres-config
+        - name: POSTGRES_PORT
+          valueFrom:
+            configMapKeyRef:
+              key: POSTGRES_PORT
+              name: postgres-config
+        - name: OPERATOR_ADDRESS
+          value: "0x7E5F4552091A69125d5DfCb7b8C2659029395Bdf"
+        - name: DEFAULT_NAMESPACE
+          value: "dataspace"
+        image: oceanprotocol/operator-service:v4main
+        imagePullPolicy: Always
+        name: operator-api
+        ports:
+        - containerPort: 3000
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+

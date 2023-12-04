@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: provider
+  namespace: dataspace
+spec:
+  ports:
+    - name: "provider8030"
+      port: 8030
+      targetPort: 8030
+  selector:
+    app: provider

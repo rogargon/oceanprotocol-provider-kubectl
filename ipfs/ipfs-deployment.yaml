@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ipfs
+  name: ipfs
+  namespace: dataspace
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ipfs
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: ipfs
+    spec:
+      containers:
+        - image: ipfs/go-ipfs:latest
+          name: ipfs
+          ports:
+            - containerPort: 5001
+              protocol: TCP
+            - containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /data/ipfs
+              name: ipfs-data
+      restartPolicy: Always
+      volumes:
+        - name: ipfs-data
+          persistentVolumeClaim:
+            claimName: ipfs-data-pvc
