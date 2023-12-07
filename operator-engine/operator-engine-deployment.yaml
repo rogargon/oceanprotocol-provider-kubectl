@@ -24,6 +24,8 @@ spec:
     spec:
       containers:
       - env:
+        - name: description
+          value: "My Data Room"
         - name: maxJobs
           value: "1"
         - name: nCPU
