@@ -83,7 +83,7 @@ Update the `ALLOWED_PROVIDERS` and `OPERATOR_ADDRESS` ENV vars in [operator-api-
 Finally, initialize the Postgres database through the Operator API from the Provider pod. Note that the Operator API is not visible externally. To do so, first open a shell in the Provider pod:
 
 ```shell
-kubectl exec $(kubectl get pods -l=app=provider -o name) -n dataspace -it -- bash
+kubectl exec $(kubectl get pods -n dataspace -l=app=provider -o name) -n dataspace -it -- bash
 ```
 
 From the shell in the Provider pod, first, install the curl command:
